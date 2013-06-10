@@ -51,6 +51,14 @@ sub DESTROY {
     $self->SUPER::DESTROY;
 }
 
+=head2 get_child_matcher 
+
+Returns child Matcher object.
+
+=cut
+
+sub get_child_matcher { $child_matcher{ ${ +shift } } }
+
 =head2 next
 
 Delegates to the child Matcher's method.
@@ -64,8 +72,8 @@ Delegates to the child Matcher's method.
 # Delegate next() and get_doc_id() to the child Matcher explicitly,
 # rather than relying on AUTOLOAD,
 # since they are required abstract methods
-sub next       { $child_matcher{ ${ +shift } }->next }
-sub get_doc_id { $child_matcher{ ${ +shift } }->get_doc_id }
+sub next       { shift->get_child_matcher->next }
+sub get_doc_id { shift->get_child_matcher->get_doc_id }
 
 sub AUTOLOAD {
     my $self   = shift;

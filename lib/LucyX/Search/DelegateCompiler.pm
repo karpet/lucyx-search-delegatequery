@@ -32,7 +32,7 @@ are documented here.
 
 =head2 matcher_class
 
-Should return the name of the LucyX::Search::DelegateMatcher class for
+Should return the name of the LucyX::Search::DelegateMatcher subclass for
 your Query class.
 
 =cut
@@ -56,6 +56,16 @@ sub new {
     return $self;
 }
 
+=head2 get_child_compiler
+
+Returns the internal Compiler object.
+
+=cut
+
+sub get_child_compiler {
+    return $child_compiler{ ${ +shift } };
+}
+
 =head2 make_matcher( I<args> )
 
 Returns instance of the class indicated by matcher_class().
@@ -66,12 +76,7 @@ sub make_matcher {
     my ( $self, %args ) = @_;
     my $child_matcher = $child_compiler{$$self}->make_matcher(%args);
     return unless $child_matcher;
-    my $sort_reader = $args{reader}->obtain("Lucy::Index::SortReader");
-    my $sort_cache  = $sort_reader->fetch_sort_cache('option');
-    return MyMatcher->new(
-        child      => $child_matcher,
-        sort_cache => $sort_cache,
-    );
+    return $self->matcher_class->new( child => $child_matcher, );
 }
 
 sub DESTROY {
