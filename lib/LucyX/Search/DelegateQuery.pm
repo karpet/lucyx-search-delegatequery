@@ -110,6 +110,30 @@ sub make_compiler {
     return $compiler;
 }
 
+=head2 get_child_query 
+
+Returns the child Query object (instance of delegate_class()).
+
+=cut
+
+sub get_child_query {
+    my $self = shift;
+    return $child_query{$$self};
+}
+
+=head2 set_boost(I<boost>)
+
+Delegates to child Query.
+
+=head2 get_boost
+
+Delegates to child Query.
+
+=cut
+
+sub set_boost { shift->get_child_query->set_boost(@_) }
+sub get_boost { shift->get_child_query->get_boost }
+
 sub DESTROY {
     my $self = shift;
     delete $child_query{$$self};

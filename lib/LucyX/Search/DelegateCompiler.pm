@@ -66,6 +66,76 @@ sub get_child_compiler {
     return $child_compiler{ ${ +shift } };
 }
 
+=head2 get_weight
+
+Delegates to child.
+
+=cut
+
+sub get_weight {
+    my $self = shift;
+    if ( !exists $child_compiler{$$self} ) {
+        return $self->SUPER::get_weight(@_);
+    }
+    return $child_compiler{$$self}->get_weight(@_);
+}
+
+=head2 get_similarity
+
+Delegates to child.
+
+=cut
+
+sub get_similarity {
+    my $self = shift;
+    if ( !exists $child_compiler{$$self} ) {
+        return $self->SUPER::get_similarity(@_);
+    }
+    return $child_compiler{$$self}->get_similarity(@_);
+}
+
+=head2 normalize
+
+Delegates to child.
+
+=cut
+
+sub normalize {
+    my $self = shift;
+    if ( !exists $child_compiler{$$self} ) {
+        return $self->SUPER::normalize(@_);
+    }
+    return $child_compiler{$$self}->normalize(@_);
+}
+
+=head2 sum_of_squared_weights
+
+Delegates to child.
+
+=cut
+
+sub sum_of_squared_weights {
+    my $self = shift;
+    if ( !exists $child_compiler{$$self} ) {
+        return $self->SUPER::sum_of_squared_weights(@_);
+    }
+    return $child_compiler{$$self}->sum_of_squared_weights();
+}
+
+=head2 highlight_spans
+
+Delegates to child.
+
+=cut
+
+sub highlight_spans {
+    my $self = shift;
+    if ( !exists $child_compiler{$$self} ) {
+        return $self->SUPER::highlight_spans(@_);
+    }
+    return $child_compiler{$$self}->highlight_spans(@_);
+}
+
 =head2 make_matcher( I<args> )
 
 Returns instance of the class indicated by matcher_class().
@@ -83,18 +153,6 @@ sub DESTROY {
     my $self = shift;
     delete $child_compiler{$$self};
     $self->SUPER::DESTROY;
-}
-
-sub AUTOLOAD {
-    my $self   = shift;
-    my $method = our $AUTOLOAD;
-    $method =~ s/.*://;
-    my $child = $child_compiler{$$self};
-    if ( $child->can($method) ) {
-        return $child->$method(@_);
-    }
-
-    croak("no such method $method for $child");
 }
 
 1;

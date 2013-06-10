@@ -67,25 +67,20 @@ Delegates to the child Matcher's method.
 
 Delegates to the child Matcher's method.
 
+=head2 score 
+
+Delegates to the child Matcher's method.
+
+=head2 advance(I<target>) 
+
+Delegates to the child Matcher's method.
+
 =cut
 
-# Delegate next() and get_doc_id() to the child Matcher explicitly,
-# rather than relying on AUTOLOAD,
-# since they are required abstract methods
 sub next       { shift->get_child_matcher->next }
 sub get_doc_id { shift->get_child_matcher->get_doc_id }
-
-sub AUTOLOAD {
-    my $self   = shift;
-    my $method = our $AUTOLOAD;
-    $method =~ s/.*://;
-    my $child = $child_matcher{$$self};
-    if ( $child->can($method) ) {
-        return $child->$method(@_);
-    }
-
-    croak("no such method $method for $child");
-}
+sub score      { shift->get_child_matcher->score }
+sub advance    { shift->get_child_matcher->advance(@_) }
 
 1;
 
